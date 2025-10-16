@@ -1,29 +1,18 @@
+import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
-    return LaunchDescription([
-        DeclareLaunchArgument('port', default_value='/dev/ttyACM0'),
-        DeclareLaunchArgument('baudrate', default_value='921600'),
-        DeclareLaunchArgument('frame_id', default_value='imu_link'),
-        DeclareLaunchArgument('publish_rpy', default_value='true'),
-        DeclareLaunchArgument('qos_reliable', default_value='true'),
-        DeclareLaunchArgument('verbose', default_value='true'),
+    pkg_share = get_package_share_directory('dm_imu')
+    params_file = os.path.join(pkg_share, 'config', 'params.yaml')
 
+    return LaunchDescription([
         Node(
             package='dm_imu',
             executable='dm_imu_node',
             name='dm_imu',
             output='screen',
-            parameters=[{
-                'port': LaunchConfiguration('port'),
-                'baudrate': LaunchConfiguration('baudrate'),
-                'frame_id': LaunchConfiguration('frame_id'),
-                'publish_rpy': LaunchConfiguration('publish_rpy'),
-                'qos_reliable': LaunchConfiguration('qos_reliable'),
-                'verbose': LaunchConfiguration('verbose'),
-            }]
+            parameters=[params_file]
         )
     ])

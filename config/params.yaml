@@ -4,3 +4,5 @@ dm_imu:
     baudrate: 921600
     frame_id: "imu_link"
     publish_rpy: true
+    qos_reliable: true
+    verbose: true

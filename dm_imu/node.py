@@ -88,24 +88,6 @@ class DmImuNode(Node):
             self.get_logger().fatal(f'Init serial failed: {e}')
             raise
 
-        # ---------- Static TF：world -> frame_id（单位变换，零平移） ----------
-        try:
-            self.tf_static = StaticTransformBroadcaster(self)
-            t = TransformStamped()
-            t.header.stamp = self.get_clock().now().to_msg()
-            t.header.frame_id = 'world'        # 你也可以改成 'map'
-            t.child_frame_id = self.frame_id   # 一般是 'imu_link'
-            t.transform.translation.x = 0.0
-            t.transform.translation.y = 0.0
-            t.transform.translation.z = 0.0
-            t.transform.rotation.x = 0.0
-            t.transform.rotation.y = 0.0
-            t.transform.rotation.z = 0.0
-            t.transform.rotation.w = 1.0
-            self.tf_static.sendTransform(t)
-        except Exception as e:
-            self.get_logger().warn(f'Failed to send static TF: {e}')
-
         # ---------- Timers ----------
         # 用时间戳做去重；拿不到就不去重
         self._last_stamp_ts: Optional[float] = None
